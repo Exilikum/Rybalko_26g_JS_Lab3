@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Layout</title>
+    <style>
+        .container {
+            display: grid;
+            grid-template-areas:
+                "x x 1 1"
+                "2 3 3 4"
+                "5 5 y 6";
+            grid-gap: 10px;
+            height: 100vh;
+        }
+        .block {
+            padding: 20px;
+            border: 1px solid #000;
+            text-align: center;
+        }
+        .x { grid-area: x; background-color: lightblue; }
+        .y { grid-area: y; background-color: lightblue; }
+        .block1 { grid-area: 1; background-color: lightblue; }
+        .block2 { grid-area: 2; background-color: lightcoral; }
+        .block3 { grid-area: 3; background-color: white; }
+        .block4 { grid-area: 4; background-color: lightcoral; }
+        .block5 { grid-area: 5; background-color: lightgreen; }
+        .block6 { grid-area: 6; background-color: lightblue; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="block x"><input type="text" id="inputX" placeholder="x"></div>
+        <div class="block block1">1</div>
+        <div class="block block2">2</div>
+        <div class="block block3">3</div>
+        <div class="block block4">
+            <button onclick="swapText()">Задача 2</button>
+            <button onclick="calculateRhombus()">Задача 3</button>
+            <button onclick="buildTriangle()">Задача 4</button>
+        </div>
+        <div class="block block5">5</div>
+        <div class="block y"><input type="text" id="inputY" placeholder="y"></div>
+        <div class="block block6">6</div>
+    </div>
+    <script>
+        function swapText() {
+            let block1 = document.querySelector('.block1');
+            let block6 = document.querySelector('.block6');
+            let temp = block1.innerHTML;
+            block1.innerHTML = block6.innerHTML;
+            block6.innerHTML = temp;
+        }
+
+        function calculateRhombus() {
+            const x = parseFloat(document.getElementById("inputX").value);
+            const y = parseFloat(document.getElementById("inputY").value);
+            if (isNaN(x) || isNaN(y)) {
+                alert("Будь ласка, введіть коректні значення для x і y.");
+                return;
+            }
+            const area = (x * y) / 2;
+            document.querySelector('.block3').innerHTML = `Площа ромба: ${area}`;
+            document.cookie = `rhombusArea=${area}; path=/;`;
+            console.log(`Кука встановлена: rhombusArea=${area}`);
+        }
+
+        function buildTriangle() {
+            const block3 = document.querySelector('.block3');
+            block3.innerHTML = '';
+            let sideA = document.createElement("input");
+            sideA.type = "number";
+            sideA.placeholder = "Сторона A";
+            sideA.id = "sideA";
+            let sideB = document.createElement("input");
+            sideB.type = "number";
+            sideB.placeholder = "Сторона B";
+            sideB.id = "sideB";
+            let sideC = document.createElement("input");
+            sideC.type = "number";
+            sideC.placeholder = "Сторона C";
+            sideC.id = "sideC";
+            let button = document.createElement("button");
+            button.innerHTML = "Перевірити";
+            button.onclick = function() {
+                const a = parseFloat(sideA.value);
+                const b = parseFloat(sideB.value);
+                const c = parseFloat(sideC.value);
+                if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                    alert("Будь ласка, введіть коректні значення сторін.");
+                    return;
+                }
+                if (a + b > c && a + c > b && b + c > a) {
+                    block3.innerHTML = "Можна побудувати трикутник.";
+                    document.cookie = `triangle=Можна побудувати; path=/;`;
+                } else {
+                    block3.innerHTML = "Не можна побудувати трикутник.";
+                    document.cookie = `triangle=Не можна побудувати; path=/;`;
+                }
+                console.log(`Кука встановлена: triangle=${block3.innerHTML}`);
+            };
+            block3.appendChild(sideA);
+            block3.appendChild(sideB);
+            block3.appendChild(sideC);
+            block3.appendChild(button);
+        }
+
+        function getCookie(name) {
+            const value = `; ${document.cookie}`;
+            const parts = value.split(`; ${name}=`);
+            if (parts.length === 2) return parts.pop().split(';').shift();
+        }
+
+        // Перевірка куків при завантаженні сторінки
+        window.onload = function() {
+            const rhombusArea = getCookie('rhombusArea');
+            const triangle = getCookie('triangle');
+            if (rhombusArea) {
+                document.querySelector('.block3').innerHTML = `Площа ромба: ${rhombusArea}`;
+                console.log(`Кука прочитана: rhombusArea=${rhombusArea}`);
+            }
+            if (triangle) {
+                document.querySelector('.block3').innerHTML = triangle;
+                console.log(`Кука прочитана: triangle=${triangle}`);
+            }
+        };
+    </script>
+</body>
+</html>
